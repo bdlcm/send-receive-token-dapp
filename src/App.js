@@ -3,8 +3,11 @@ import './App.css';
 import React, {useEffect, useState} from 'react';
 import { ethers } from "ethers";
  
-
-
+ import ReactDOM from 'react-dom';
+import {Button, Card, Grid, Item} from '@mui/material';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
  
 
 
@@ -81,11 +84,47 @@ function App() {
   return (
  
        
-        <div className='App-header'>
-      {address}
-      <br></br>
-      {wallet}
-         </div>
+   <>
+
+<Grid container spacing={2}>
+  <Grid item xs={6}>
+  <Card>
+<CardContent>
+    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+      Address
+    </Typography>
+    <Typography variant="h5" component="div">
+    {address}
+    </Typography>
+   
+  </CardContent> 
+</Card>
+  </Grid>
+ 
+  <Grid item xs={6}>
+  <Card>
+<CardContent>
+    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+     Eth
+    </Typography>
+    <Typography variant="h5" component="div">
+    {wallet}
+    </Typography>
+   
+  </CardContent> 
+</Card>
+  </Grid>
+</Grid>
+       
+
+
+
+ 
+  
+</>
+   
+
+
    
   );
 }
