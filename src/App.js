@@ -13,24 +13,30 @@ function App() {
   const [address, setUserAddress] = React.useState("");
   const [receiver, setReceiver] = React.useState("");
   const [amount, setAmount] = React.useState("");
-  const [response, setResponse] = React.useState("");
+  const [addressResponse, setAddressResponse] = React.useState("");
+  const [amountResponse, setamountResponse] = React.useState("");
 
   const [wallet, setWallet] = React.useState("");
-  const [usdc, setUsdc] = React.useState("");
+  const [usdcamount, setUsdcamount] = React.useState("");
 
   const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+  const usdc = {
+    address: "0x68ec573C119826db2eaEA1Efbfc2970cDaC869c4",
+    abi: [
+      "function name() view returns (string)",
+      "function symbol() view returns (string)",
+      "function gimmeSome() external",
+      "function balanceOf(address _owner) public view returns (uint256 balance)",
+      "function transfer(address _to, uint256 _value) public returns (bool success)",
+    ],
+  };
+ 
 
 
 
   async function mintUsdc() {
-    const usdc = {
-      address: "0x68ec573C119826db2eaEA1Efbfc2970cDaC869c4",
-      abi: [
-        "function gimmeSome() external",
-        "function balanceOf(address _owner) public view returns (uint256 balance)",
-        "function transfer(address _to, uint256 _value) public returns (bool success)",
-      ],
-    };
+ 
     
  
     await provider.send("eth_requestAccounts", []);
@@ -73,17 +79,7 @@ function App() {
 
 async function getUsdc() {
 
-  const usdc = {
-    address: "0x68ec573C119826db2eaEA1Efbfc2970cDaC869c4",
-    abi: [
-      "function name() view returns (string)",
-      "function symbol() view returns (string)",
-      "function gimmeSome() external",
-      "function balanceOf(address _owner) public view returns (uint256 balance)",
-      "function transfer(address _to, uint256 _value) public returns (bool success)",
-    ],
-  };
-
+  
 
   await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
@@ -92,7 +88,7 @@ async function getUsdc() {
   const userAddress = await signer.getAddress();
    usdcContract.balanceOf(userAddress).then((usdcBalance) => {
     let newUsdcBalance = ethers.utils.formatUnits(usdcBalance, 6);
-    setUsdc(newUsdcBalance);
+    setUsdcamount(newUsdcBalance);
     
   });
 
@@ -101,67 +97,67 @@ async function getUsdc() {
 
 
 
-// async function transferUsdc() {
+async function transferUsdc() {
  
  
-//   await provider.send("eth_requestAccounts", []);
-//   const signer = provider.getSigner();
-//   let userAddress = await signer.getAddress();
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  let userAddress = await signer.getAddress();
 
-//   const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
+  const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
 
-//   try {
-//     receiver = ethers.utils.getAddress(receiver);
-//   } catch {
-//     response = `Invalid address: ${receiver}`;
+  try {
+    ethers.utils.getAddress(receiver);
+  } catch {
+     setAddressResponse(`Invalid address: ${receiver}`);
  
-//   }
+  }
 
-//   try {
-//     amount = ethers.utils.parseUnits(amount, 6);
-//     if (amount.isNegative()) {
-//       throw new Error();
-//     }
-//   } catch {
-//     console.error(`Invalid amount: ${amount}`);
-//     response = `Invalid amount: ${amount}`;
-//     document.getElementById("transferResponse").innerText = response;
-//     document.getElementById("transferResponse").style.display = "block";
-//   }
+  try {
+    ethers.utils.parseUnits(amount, 6).then((val)=>{
+      if (val.isNegative()) {
+        throw new Error();
+      }
 
-//   const balance = await usdcContract.balanceOf(userAddress);
+    })
+    
+  } catch {
+    console.error(`Invalid amount: ${amount}`);
+    setamountResponse(`Invalid amount: ${amount}`);
+   
+  }
 
-//   if (balance.lt(amount)) {
-//     let amountFormatted = ethers.utils.formatUnits(amount, 6);
-//     let balanceFormatted = ethers.utils.formatUnits(balance, 6);
-//     console.error(
-//       `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`
-//     );
+  const balance = await usdcContract.balanceOf(userAddress);
 
-//     response = `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`;
-//     document.getElementById("transferResponse").innerText = response;
-//     document.getElementById("transferResponse").style.display = "block";
-//   }
-//   let amountFormatted = ethers.utils.formatUnits(amount, 6);
+  if (balance.lt(amount)) {
+    let amountFormatted = ethers.utils.formatUnits(amount, 6);
+    let balanceFormatted = ethers.utils.formatUnits(balance, 6);
+    console.error(
+      `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`
+    );
+
+ 
+  }
+  let amountFormatted = ethers.utils.formatUnits(amount, 6);
 
 
-//   response = `Transferring ${amountFormatted} USDC receiver ${receiver.slice(
-//     0,
-//     6
-//   )}...`;
-//   document.getElementById("transferResponse").innerText = response;
-//   document.getElementById("transferResponse").style.display = "block";
+  // response = `Transferring ${amountFormatted} USDC receiver ${receiver.slice(
+  //   0,
+  //   6
+  // )}...`;
+  // document.getElementById("transferResponse").innerText = response;
+  // document.getElementById("transferResponse").style.display = "block";
 
-//   const tx = await usdcContract.transfer(receiver, amount, { gasPrice: 20e9 });
-//   document.getElementById(
-//     "transferResponse"
-//   ).innerText += `Transaction hash: ${tx.hash}`;
+  const tx = await usdcContract.transfer(receiver, amount, { gasPrice: 20e9 });
+  // document.getElementById(
+  //   "transferResponse"
+  // ).innerText += `Transaction hash: ${tx.hash}`;
 
-//   const receipt = await tx.wait();
-//   document.getElementById(
-//     "transferResponse"
-//   ).innerText += `Transaction confirmed in block ${receipt.blockNumber}`;
-// }
+  const receipt = await tx.wait();
+  // document.getElementById(
+  //   "transferResponse"
+  // ).innerText += `Transaction confirmed in block ${receipt.blockNumber}`;
+}
 
 
  
@@ -225,14 +221,27 @@ async function getUsdc() {
                Usdc
              </Typography>
              <Typography variant="h5" component="div">
-               {usdc}
+               {usdcamount}
              </Typography>
            </CardContent>
          </Card>
        </Grid>
-      
-     <Button  onClick={mintUsdc} >Mint USDC</Button>
-    </Paper>
+       <Button variant="contained" onClick={mintUsdc} >Mint USDC</Button>
+
+
+
+
+ 
+       <Grid item xs={8}>
+         <Card>
+         <input type="text" placeholder="Address to send" onChange={e => setReceiver(e.target.value)} />
+    <input type="text" placeholder="amount" onChange={e => setAmount(e.target.value)} />
+          </Card>
+          {amountResponse && (<Card><CardContent><Typography>{amountResponse}</Typography></CardContent></Card>)}
+          {addressResponse && (<Card><CardContent><Typography>{addressResponse}</Typography></CardContent></Card>)}
+       </Grid>
+       <Button variant="contained" onClick={transferUsdc}>Transfer</Button>
+     </Paper>
     </div>
 
    
