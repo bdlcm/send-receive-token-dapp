@@ -19,7 +19,11 @@ function App() {
   const [wallet, setWallet] = React.useState("");
   const [usdcamount, setUsdcamount] = React.useState("");
 
+
+
   const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+ 
 
   const usdc = {
     address: "0x68ec573C119826db2eaEA1Efbfc2970cDaC869c4",
@@ -57,19 +61,27 @@ function App() {
   }
 
   async function getAddress() {
+     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
     const signer = provider.getSigner();
+    console.log("signer", signer.address)
 
-    const userAddress = await signer.getAddress();
-    provider.getBalance(userAddress).then((balance) => {
-      setUserAddress(userAddress);
+    if (signer.address !=null){
+      const userAddress = await signer.getAddress();
 
-      // convert a currency unit from wei to ether
-      const balanceInEth = ethers.utils.formatEther(balance);
-      setWallet(balanceInEth);
-      console.log(`balance: ${balanceInEth} ETH`, userAddress);
-      console.log("state", wallet, address);
-    });
+  
+      provider.getBalance(userAddress).then((balance) => {
+        setUserAddress(userAddress);
+  
+        // convert a currency unit from wei to ether
+        const balanceInEth = ethers.utils.formatEther(balance);
+        setWallet(balanceInEth);
+        console.log(`balance: ${balanceInEth} ETH`, userAddress);
+        console.log("state", wallet, address);
+      });
+  
+  
+    }
 
  
   }
@@ -165,7 +177,9 @@ async function transferUsdc() {
   useEffect(() => {
     getAddress();
     getUsdc();
-  });
+    console.log("eth window,", window.ethereum)
+    
+  },[]);
 
   // })
 
