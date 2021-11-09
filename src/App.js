@@ -36,12 +36,14 @@ function App() {
     ],
   };
  
+  // const _checkProvider=(operation)=>{
+  //   if (!provider) { logger.throwError("missing provider", Logger.errors.UNSUPPORTED_OPERATION, {
+  //       operation: (operation || "_checkProvider") });
+  //   }
 
 
 
   async function mintUsdc() {
- 
-    
  
     await provider.send("eth_requestAccounts", []);
   
@@ -60,29 +62,44 @@ function App() {
     console.log(`Gas used: ${receipt.gasUsed.toString()}`);
   }
 
+
+
   async function getAddress() {
-     const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
-    const signer = provider.getSigner();
-    console.log("signer", signer.address)
+//     let oldBalance = ethers.constants.Zero;
+//       provider.on(“block”, () => {
+//     provider.getBalance(address).then((balance) => {
+//         if (balance.eq(oldBalance)) { callback(balance, oldBalance); }
+//         oldBalance = balance;
+//     });
+// });
 
-    if (signer.address !=null){
+    try     {   
+      
+      if (typeof  window.ethereum !== undefined) {
+      await window.ethereum.enable()
+      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      // const network = (await provider.getNetwork()).chainId
+      const signer = provider.getSigner();
+           
       const userAddress = await signer.getAddress();
+      let oldBalance = ethers.constants.Zero;
 
-  
-      provider.getBalance(userAddress).then((balance) => {
+       provider.getBalance(userAddress).then((balance) => {
         setUserAddress(userAddress);
   
         // convert a currency unit from wei to ether
         const balanceInEth = ethers.utils.formatEther(balance);
         setWallet(balanceInEth);
-        console.log(`balance: ${balanceInEth} ETH`, userAddress);
-        console.log("state", wallet, address);
+    
       });
-  
-  
-    }
-
+  } else {
+      console.log("error")
+  }
+} catch (e) {
+  console.log(e)
+  // throw Error(e.message)
+}
  
   }
 
@@ -90,27 +107,20 @@ function App() {
 
 
 async function getUsdc() {
-
-  
-
+ 
   await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
-  
   const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
   const userAddress = await signer.getAddress();
    usdcContract.balanceOf(userAddress).then((usdcBalance) => {
     let newUsdcBalance = ethers.utils.formatUnits(usdcBalance, 6);
     setUsdcamount(newUsdcBalance);
     
-  });
-
- 
+  }); 
 }
 
 
-
 async function transferUsdc() {
- 
  
   await provider.send("eth_requestAccounts", []);
   const signer = provider.getSigner();
@@ -122,7 +132,6 @@ async function transferUsdc() {
     ethers.utils.getAddress(receiver);
   } catch {
      setAddressResponse(`Invalid address: ${receiver}`);
- 
   }
 
   try {
@@ -130,24 +139,20 @@ async function transferUsdc() {
       if (val.isNegative()) {
         throw new Error();
       }
-
     })
-    
   } catch {
     console.error(`Invalid amount: ${amount}`);
     setamountResponse(`Invalid amount: ${amount}`);
-   
   }
 
-  const balance = await usdcContract.balanceOf(userAddress);
 
+  const balance = await usdcContract.balanceOf(userAddress);
   if (balance.lt(amount)) {
     let amountFormatted = ethers.utils.formatUnits(amount, 6);
     let balanceFormatted = ethers.utils.formatUnits(balance, 6);
     console.error(
       `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`
     );
-
  
   }
   let amountFormatted = ethers.utils.formatUnits(amount, 6);
@@ -175,11 +180,11 @@ async function transferUsdc() {
  
 
   useEffect(() => {
+ 
     getAddress();
     getUsdc();
-    console.log("eth window,", window.ethereum)
-    
-  },[]);
+     
+  }, [usdc, wallet]);
 
   // })
 
@@ -187,7 +192,7 @@ async function transferUsdc() {
     <>
     <div className="App-header">
     <Paper elevation={3}>
-
+ 
 
         <Grid container spacing={2}>
        <Grid item xs={8}>
