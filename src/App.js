@@ -13,6 +13,7 @@ import {
   BackGround,
   BackDrop,
 } from "./components/styles/padding";
+import { Address } from "./components/location.component";
 
 function App() {
   const [address, setUserAddress] = React.useState("");
@@ -164,7 +165,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <BackGround>
+      {/* <BackGround>
         <Card>
           <Descriptor sx={{ fontSize: 14 }} color="white" gutterBottom>
             Address
@@ -182,7 +183,9 @@ function App() {
             {wallet}
           </Number>
         </Card>
-      </BackGround>
+      </BackGround> */}
+
+      <Address/>
       {/* <BackGround>
         <Card>
           <Descriptor sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
