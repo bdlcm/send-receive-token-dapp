@@ -4,7 +4,9 @@ import { ethers } from "ethers";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./components/styles/theme";
 import { LocationContextProvider } from "./services/location/location.context";
-import { Typography, Button } from "@mui/material";
+import { MintingContextProvider } from "./services/minting/minting.context";
+
+import {   Button } from "@mui/material";
 import {
   Text,
   Card,
@@ -14,6 +16,7 @@ import {
   BackDrop,
 } from "./components/styles/padding";
 import { Address } from "./components/location.component";
+import { Mint } from "./components/mint.component";
 
 function App() {
   const [address, setUserAddress] = React.useState("");
@@ -43,53 +46,9 @@ function App() {
   //       operation: (operation || "_checkProvider") });
   //   }
 
-  async function mintUsdc() {
-    await provider.send("eth_requestAccounts", []);
 
-    //Signing messages on the blockchain means creating digital signatures.
-    //These digital signatures are used to prove the ownership of an
-    //address without exposing its private key.
-    const signer = provider.getSigner();
-    let userAddress = await signer.getAddress();
-    const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
 
-    const tx = await usdcContract.gimmeSome({ gasPrice: 20e9 });
-    console.log(`Transaction hash: ${tx.hash}`);
-
-    const receipt = await tx.wait();
-    console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
-    console.log(`Gas used: ${receipt.gasUsed.toString()}`);
-  }
-
-  async function getAddress() {
-    try {
-      if (typeof window.ethereum !== undefined) {
-        await window.ethereum.enable();
-        const provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          "any"
-        );
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-
-        const userAddress = await signer.getAddress();
-        let oldBalance = ethers.constants.Zero;
-
-        provider.getBalance(userAddress).then((balance) => {
-          setUserAddress(userAddress);
-
-          // convert a currency unit from wei to ether
-          const balanceInEth = ethers.utils.formatEther(balance);
-          setWallet(balanceInEth);
-        });
-      } else {
-        console.log("error");
-      }
-    } catch (e) {
-      console.log(e);
-      // throw Error(e.message)
-    }
-  }
+ 
 
   async function getUsdc() {
     await provider.send("eth_requestAccounts", []);
@@ -157,7 +116,7 @@ function App() {
   }
 
   useEffect(() => {
-    getAddress();
+    // getAddress();
     getUsdc();
   }, [usdc, wallet]);
 
@@ -166,21 +125,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
  <LocationContextProvider>
- <Address/>
-      {/* <BackGround>
-        <Card>
-          <Descriptor sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Usdc
-          </Descriptor>
-          <Number variant="h5" component="div">
-            {usdcamount}
-          </Number>
-        </Card>
 
-        <Button variant="contained" onClick={mintUsdc}>
-          Mint USDC
-        </Button>
-      </BackGround> */}
+ 
+ <MintingContextProvider>
+   <Mint></Mint>
+<Address></Address>
+
+</MintingContextProvider>
+ 
+ 
       <BackGround>
         <Card>
           <input

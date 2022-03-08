@@ -7,17 +7,12 @@ import {
     BackGround,
    } from "./styles/padding";
 
-
-
-
+ 
 export  const Address= ()  => {
 
     const { address, wallet } = useContext(LocationContext);
-
-
-
-
-  return(
+    
+   return(
     <BackGround>
     <Card>
       <Descriptor sx={{ fontSize: 14 }} color="white" gutterBottom>
