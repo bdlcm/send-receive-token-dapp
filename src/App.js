@@ -11,7 +11,7 @@ import {
   Descriptor,
   Number,
   BackGround,
-  BackDrop
+  BackDrop,
 } from "./components/styles/padding";
 
 function App() {
@@ -61,8 +61,6 @@ function App() {
   }
 
   async function getAddress() {
- 
-
     try {
       if (typeof window.ethereum !== undefined) {
         await window.ethereum.enable();
@@ -166,7 +164,6 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
- 
       <BackGround>
         <Card>
           <Descriptor sx={{ fontSize: 14 }} color="white" gutterBottom>
@@ -178,7 +175,7 @@ function App() {
         </Card>
 
         <Card>
-          <Descriptor sx={{ fontSize: 14 }} color="text.secondary"  >
+          <Descriptor sx={{ fontSize: 14 }} color="text.secondary">
             Eth
           </Descriptor>
           <Number variant="h5" component="div">
@@ -223,7 +220,6 @@ function App() {
           Transfer
         </Button>
       </BackGround>
- 
     </ThemeProvider>
   );
 }

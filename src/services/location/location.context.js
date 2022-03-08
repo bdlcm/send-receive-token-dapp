@@ -1,7 +1,6 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 
-
-export const LocationContext = React.createContext();
+export const LocationContext = createContext();
 
 export const LocationContextContextProvider = ({ children }) => {
     const [address, setUserAddress] = React.useState("");
@@ -9,9 +8,14 @@ export const LocationContextContextProvider = ({ children }) => {
     const [amount, setAmount] = React.useState("");
     const [addressResponse, setAddressResponse] = React.useState("");
     const [amountResponse, setamountResponse] = React.useState("");
+    const [wallet, setWallet] = React.useState("");
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
+
+
+
 
   
     return (
@@ -19,7 +23,9 @@ export const LocationContextContextProvider = ({ children }) => {
           value={{
             address,
             receiver,
-            amount,addressResponse,
+           
+            amount,
+            addressResponse,
             amountResponse,
 
             isLoading,
