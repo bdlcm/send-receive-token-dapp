@@ -6,6 +6,7 @@ export const LocationContext = createContext();
 export const LocationContextProvider = ({ children }) => {
   const [address, setUserAddress] = useState("");
   const [wallet, setWallet] = useState("");
+  const [signer, setSigner] = useState("");
 
   async function getAddress() {
     try {
@@ -18,6 +19,7 @@ export const LocationContextProvider = ({ children }) => {
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
 
+        setSigner(signer);
         const userAddress = await signer.getAddress();
         let oldBalance = ethers.constants.Zero;
 
@@ -46,6 +48,7 @@ export const LocationContextProvider = ({ children }) => {
       value={{
         address,
         wallet,
+        signer,
         // receiver,
         // amount,
         // addressResponse,

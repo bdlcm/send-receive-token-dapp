@@ -4,10 +4,6 @@ import { ethers } from "ethers";
 export const MintingContext = createContext();
 
 export const MintingContextProvider = ({ children }) => {
-  const [address, setUserAddress] = useState("");
-  const [wallet, setWallet] = useState("");
-  const [receiver, setReceiver] = React.useState("");
-  const [amount, setAmount] = React.useState("");
   const [usdcamount, setUsdcamount] = React.useState("");
   const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
@@ -61,6 +57,7 @@ export const MintingContextProvider = ({ children }) => {
       value={{
         usdcamount,
         mintUsdc,
+        usdc,
 
         // receiver,
         // amount,
