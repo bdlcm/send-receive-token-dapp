@@ -17,16 +17,25 @@
   background-color: #282c34;
   min-height: 50vh;
   display: flex;
+  padding: 5%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  margin: 5%;
+  margin: 20px auto;
   color: white;
+  width: fit-content;
+  
 }
 
 .App-link {
   color: #61dafb;
+}
+
+
+.Card{
+  width:100%;
+
 }
 
 @keyframes App-logo-spin {
