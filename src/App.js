@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ThemeProvider } from "styled-components";
 import { theme } from "./components/styles/theme";
-
+import { LocationContextProvider } from "./services/location/location.context";
 import { Typography, Button } from "@mui/material";
 import {
   Text,
@@ -165,27 +165,8 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* <BackGround>
-        <Card>
-          <Descriptor sx={{ fontSize: 14 }} color="white" gutterBottom>
-            Address
-          </Descriptor>
-          <Number variant="h5" component="div" color="white">
-            {address}
-          </Number>
-        </Card>
-
-        <Card>
-          <Descriptor sx={{ fontSize: 14 }} color="text.secondary">
-            Eth
-          </Descriptor>
-          <Number variant="h5" component="div">
-            {wallet}
-          </Number>
-        </Card>
-      </BackGround> */}
-
-      <Address/>
+ <LocationContextProvider>
+ <Address/>
       {/* <BackGround>
         <Card>
           <Descriptor sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
@@ -223,6 +204,9 @@ function App() {
           Transfer
         </Button>
       </BackGround>
+
+ </LocationContextProvider>
+
     </ThemeProvider>
   );
 }
