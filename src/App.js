@@ -6,7 +6,7 @@ import { theme } from "./components/styles/theme";
 import { LocationContextProvider } from "./services/location/location.context";
 import { MintingContextProvider } from "./services/minting/minting.context";
 
-import {   Button } from "@mui/material";
+import { Button } from "@mui/material";
 import {
   Text,
   Card,
@@ -45,10 +45,6 @@ function App() {
   //   if (!provider) { logger.throwError("missing provider", Logger.errors.UNSUPPORTED_OPERATION, {
   //       operation: (operation || "_checkProvider") });
   //   }
-
-
-
- 
 
   async function getUsdc() {
     await provider.send("eth_requestAccounts", []);
@@ -124,42 +120,36 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
- <LocationContextProvider>
+      <LocationContextProvider>
+        <MintingContextProvider>
+          <Mint></Mint>
+          <Address></Address>
+        </MintingContextProvider>
 
- 
- <MintingContextProvider>
-   <Mint></Mint>
-<Address></Address>
-
-</MintingContextProvider>
- 
- 
-      <BackGround>
-        <Card>
-          <input
-            type="text"
-            placeholder="Address to send"
-            onChange={(e) => setReceiver(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="amount"
-            onChange={(e) => setAmount(e.target.value)}
-          />
-        </Card>
-        {amountResponse && (
+        <BackGround>
           <Card>
-            <Number>{amountResponse}</Number>{" "}
+            <input
+              type="text"
+              placeholder="Address to send"
+              onChange={(e) => setReceiver(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="amount"
+              onChange={(e) => setAmount(e.target.value)}
+            />
           </Card>
-        )}
+          {amountResponse && (
+            <Card>
+              <Number>{amountResponse}</Number>{" "}
+            </Card>
+          )}
 
-        <Button variant="contained" onClick={transferUsdc}>
-          Transfer
-        </Button>
-      </BackGround>
-
- </LocationContextProvider>
-
+          <Button variant="contained" onClick={transferUsdc}>
+            Transfer
+          </Button>
+        </BackGround>
+      </LocationContextProvider>
     </ThemeProvider>
   );
 }

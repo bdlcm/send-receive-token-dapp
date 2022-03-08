@@ -21,7 +21,7 @@ export const MintingContextProvider = ({ children }) => {
       "function transfer(address _to, uint256 _value) public returns (bool success)",
     ],
   };
- 
+
   async function mintUsdc() {
     await provider.send("eth_requestAccounts", []);
 
@@ -40,8 +40,6 @@ export const MintingContextProvider = ({ children }) => {
     console.log(`Gas used: ${receipt.gasUsed.toString()}`);
   }
 
-   
-
   async function getUsdc() {
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
@@ -53,20 +51,17 @@ export const MintingContextProvider = ({ children }) => {
     });
   }
 
-      
-
   useEffect(() => {
     // getAddress();
     getUsdc();
   }, [usdc]);
-  
 
   return (
     <MintingContext.Provider
       value={{
         usdcamount,
-        mintUsdc
-       
+        mintUsdc,
+
         // receiver,
         // amount,
         // addressResponse,

@@ -7,7 +7,7 @@ export const LocationContextProvider = ({ children }) => {
   const [address, setUserAddress] = useState("");
   const [wallet, setWallet] = useState("");
 
-  async function getAddress(){
+  async function getAddress() {
     try {
       if (typeof window.ethereum !== undefined) {
         await window.ethereum.enable();
@@ -17,13 +17,13 @@ export const LocationContextProvider = ({ children }) => {
         );
         await provider.send("eth_requestAccounts", []);
         const signer = provider.getSigner();
-  
+
         const userAddress = await signer.getAddress();
         let oldBalance = ethers.constants.Zero;
-  
+
         provider.getBalance(userAddress).then((balance) => {
           setUserAddress(userAddress);
-  
+
           // convert a currency unit from wei to ether
           const balanceInEth = ethers.utils.formatEther(balance);
           setWallet(balanceInEth);
@@ -35,20 +35,17 @@ export const LocationContextProvider = ({ children }) => {
       console.log(e);
       // throw Error(e.message)
     }
-    }
+  }
 
-      
   useEffect(() => {
     getAddress();
- 
   }, [wallet]);
-  
 
   return (
     <LocationContext.Provider
       value={{
         address,
-        wallet
+        wallet,
         // receiver,
         // amount,
         // addressResponse,
