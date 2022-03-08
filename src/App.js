@@ -1,13 +1,18 @@
-import logo from "./logo.svg";
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import { ThemeProvider } from "styled-components";
+import { theme } from "./components/styles/theme";
 
-import ReactDOM from "react-dom";
-import { Button, Card, Grid, Item, Paper } from "@mui/material";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
+import { Typography, Button } from "@mui/material";
+import {
+  Text,
+  Card,
+  Descriptor,
+  Number,
+  BackGround,
+  BackDrop
+} from "./components/styles/padding";
 
 function App() {
   const [address, setUserAddress] = React.useState("");
@@ -19,11 +24,7 @@ function App() {
   const [wallet, setWallet] = React.useState("");
   const [usdcamount, setUsdcamount] = React.useState("");
 
-
-
   const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-
- 
 
   const usdc = {
     address: "0x68ec573C119826db2eaEA1Efbfc2970cDaC869c4",
@@ -35,236 +36,195 @@ function App() {
       "function transfer(address _to, uint256 _value) public returns (bool success)",
     ],
   };
- 
+
   // const _checkProvider=(operation)=>{
   //   if (!provider) { logger.throwError("missing provider", Logger.errors.UNSUPPORTED_OPERATION, {
   //       operation: (operation || "_checkProvider") });
   //   }
 
-
-
   async function mintUsdc() {
- 
     await provider.send("eth_requestAccounts", []);
-  
-    //Signing messages on the blockchain means creating digital signatures. 
-    //These digital signatures are used to prove the ownership of an 
+
+    //Signing messages on the blockchain means creating digital signatures.
+    //These digital signatures are used to prove the ownership of an
     //address without exposing its private key.
     const signer = provider.getSigner();
     let userAddress = await signer.getAddress();
     const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
-  
+
     const tx = await usdcContract.gimmeSome({ gasPrice: 20e9 });
     console.log(`Transaction hash: ${tx.hash}`);
-  
+
     const receipt = await tx.wait();
     console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
     console.log(`Gas used: ${receipt.gasUsed.toString()}`);
   }
 
-
-
   async function getAddress() {
-
-//     let oldBalance = ethers.constants.Zero;
-//       provider.on(“block”, () => {
-//     provider.getBalance(address).then((balance) => {
-//         if (balance.eq(oldBalance)) { callback(balance, oldBalance); }
-//         oldBalance = balance;
-//     });
-// });
-
-    try     {   
-      
-      if (typeof  window.ethereum !== undefined) {
-      await window.ethereum.enable()
-      const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-      // const network = (await provider.getNetwork()).chainId
-      const signer = provider.getSigner();
-           
-      const userAddress = await signer.getAddress();
-      let oldBalance = ethers.constants.Zero;
-
-       provider.getBalance(userAddress).then((balance) => {
-        setUserAddress(userAddress);
-  
-        // convert a currency unit from wei to ether
-        const balanceInEth = ethers.utils.formatEther(balance);
-        setWallet(balanceInEth);
-    
-      });
-  } else {
-      console.log("error")
-  }
-} catch (e) {
-  console.log(e)
-  // throw Error(e.message)
-}
  
-  }
 
+    try {
+      if (typeof window.ethereum !== undefined) {
+        await window.ethereum.enable();
+        const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          "any"
+        );
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
 
+        const userAddress = await signer.getAddress();
+        let oldBalance = ethers.constants.Zero;
 
+        provider.getBalance(userAddress).then((balance) => {
+          setUserAddress(userAddress);
 
-async function getUsdc() {
- 
-  await provider.send("eth_requestAccounts", []);
-  const signer = provider.getSigner();
-  const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
-  const userAddress = await signer.getAddress();
-   usdcContract.balanceOf(userAddress).then((usdcBalance) => {
-    let newUsdcBalance = ethers.utils.formatUnits(usdcBalance, 6);
-    setUsdcamount(newUsdcBalance);
-    
-  }); 
-}
-
-
-async function transferUsdc() {
- 
-  await provider.send("eth_requestAccounts", []);
-  const signer = provider.getSigner();
-  let userAddress = await signer.getAddress();
-
-  const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
-
-  try {
-    ethers.utils.getAddress(receiver);
-  } catch {
-     setAddressResponse(`Invalid address: ${receiver}`);
-  }
-
-  try {
-    ethers.utils.parseUnits(amount, 6).then((val)=>{
-      if (val.isNegative()) {
-        throw new Error();
+          // convert a currency unit from wei to ether
+          const balanceInEth = ethers.utils.formatEther(balance);
+          setWallet(balanceInEth);
+        });
+      } else {
+        console.log("error");
       }
-    })
-  } catch {
-    console.error(`Invalid amount: ${amount}`);
-    setamountResponse(`Invalid amount: ${amount}`);
+    } catch (e) {
+      console.log(e);
+      // throw Error(e.message)
+    }
   }
 
+  async function getUsdc() {
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
+    const userAddress = await signer.getAddress();
+    usdcContract.balanceOf(userAddress).then((usdcBalance) => {
+      let newUsdcBalance = ethers.utils.formatUnits(usdcBalance, 6);
+      setUsdcamount(newUsdcBalance);
+    });
+  }
 
-  const balance = await usdcContract.balanceOf(userAddress);
-  if (balance.lt(amount)) {
+  async function transferUsdc() {
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    let userAddress = await signer.getAddress();
+
+    const usdcContract = new ethers.Contract(usdc.address, usdc.abi, signer);
+
+    try {
+      ethers.utils.getAddress(receiver);
+    } catch {
+      setAddressResponse(`Invalid address: ${receiver}`);
+    }
+
+    try {
+      ethers.utils.parseUnits(amount, 6).then((val) => {
+        if (val.isNegative()) {
+          throw new Error();
+        }
+      });
+    } catch {
+      console.error(`Invalid amount: ${amount}`);
+      setamountResponse(`Invalid amount: ${amount}`);
+    }
+
+    const balance = await usdcContract.balanceOf(userAddress);
+    if (balance.lt(amount)) {
+      let amountFormatted = ethers.utils.formatUnits(amount, 6);
+      let balanceFormatted = ethers.utils.formatUnits(balance, 6);
+      console.error(
+        `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`
+      );
+    }
     let amountFormatted = ethers.utils.formatUnits(amount, 6);
-    let balanceFormatted = ethers.utils.formatUnits(balance, 6);
-    console.error(
-      `Insufficient balance receiver send ${amountFormatted} (You have ${balanceFormatted})`
-    );
- 
+
+    // response = `Transferring ${amountFormatted} USDC receiver ${receiver.slice(
+    //   0,
+    //   6
+    // )}...`;
+    // document.getElementById("transferResponse").innerText = response;
+    // document.getElementById("transferResponse").style.display = "block";
+
+    const tx = await usdcContract.transfer(receiver, amount, {
+      gasPrice: 20e9,
+    });
+    // document.getElementById(
+    //   "transferResponse"
+    // ).innerText += `Transaction hash: ${tx.hash}`;
+
+    const receipt = await tx.wait();
+    // document.getElementById(
+    //   "transferResponse"
+    // ).innerText += `Transaction confirmed in block ${receipt.blockNumber}`;
   }
-  let amountFormatted = ethers.utils.formatUnits(amount, 6);
-
-
-  // response = `Transferring ${amountFormatted} USDC receiver ${receiver.slice(
-  //   0,
-  //   6
-  // )}...`;
-  // document.getElementById("transferResponse").innerText = response;
-  // document.getElementById("transferResponse").style.display = "block";
-
-  const tx = await usdcContract.transfer(receiver, amount, { gasPrice: 20e9 });
-  // document.getElementById(
-  //   "transferResponse"
-  // ).innerText += `Transaction hash: ${tx.hash}`;
-
-  const receipt = await tx.wait();
-  // document.getElementById(
-  //   "transferResponse"
-  // ).innerText += `Transaction confirmed in block ${receipt.blockNumber}`;
-}
-
-
- 
 
   useEffect(() => {
- 
     getAddress();
     getUsdc();
-     
   }, [usdc, wallet]);
 
   // })
 
   return (
-    <>
-    <div className="App-header">
-    <Paper elevation={3}>
+    <ThemeProvider theme={theme}>
  
+      <BackGround>
+        <Card>
+          <Descriptor sx={{ fontSize: 14 }} color="white" gutterBottom>
+            Address
+          </Descriptor>
+          <Number variant="h5" component="div" color="white">
+            {address}
+          </Number>
+        </Card>
 
-        <Grid container spacing={2}>
-       <Grid item xs={8}>
-         <Card>
-           <CardContent>
-             <Typography
-               sx={{ fontSize: 14 }}
-               color="text.secondary"
-               gutterBottom
-             >
-               Address
-             </Typography>
-             <Typography variant="h5" component="div">
-               {address}
-             </Typography>
-           </CardContent>
-         </Card>
-       </Grid>
+        <Card>
+          <Descriptor sx={{ fontSize: 14 }} color="text.secondary"  >
+            Eth
+          </Descriptor>
+          <Number variant="h5" component="div">
+            {wallet}
+          </Number>
+        </Card>
+      </BackGround>
+      {/* <BackGround>
+        <Card>
+          <Descriptor sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Usdc
+          </Descriptor>
+          <Number variant="h5" component="div">
+            {usdcamount}
+          </Number>
+        </Card>
 
-       <Grid item xs={8}>
-         <Card>
-           <CardContent>
-             <Typography
-               sx={{ fontSize: 14 }}
-               color="text.secondary"
-               gutterBottom
-             >
-               Eth
-             </Typography>
-             <Typography variant="h5" component="div">
-               {wallet}
-             </Typography>
-           </CardContent>
-         </Card>
-       </Grid>
-     </Grid>
-     <Grid item xs={8}>
-         <Card>
-           <CardContent>
-             <Typography
-               sx={{ fontSize: 14 }}
-               color="text.secondary"
-               gutterBottom
-             >
-               Usdc
-             </Typography>
-             <Typography variant="h5" component="div">
-               {usdcamount}
-             </Typography>
-           </CardContent>
-         </Card>
-       </Grid>
-       <Button variant="contained" onClick={mintUsdc} >Mint USDC</Button>
-
-
-
-
- 
-       <Grid item xs={8}>
-         <Card>
-         <input type="text" placeholder="Address to send" onChange={e => setReceiver(e.target.value)} />
-    <input type="text" placeholder="amount" onChange={e => setAmount(e.target.value)} />
+        <Button variant="contained" onClick={mintUsdc}>
+          Mint USDC
+        </Button>
+      </BackGround> */}
+      <BackGround>
+        <Card>
+          <input
+            type="text"
+            placeholder="Address to send"
+            onChange={(e) => setReceiver(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="amount"
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </Card>
+        {amountResponse && (
+          <Card>
+            <Number>{amountResponse}</Number>{" "}
           </Card>
-          {amountResponse && (<Card><CardContent><Typography>{amountResponse}</Typography></CardContent></Card>)}
-          {addressResponse && (<Card><CardContent><Typography>{addressResponse}</Typography></CardContent></Card>)}
-       </Grid>
-       <Button variant="contained" onClick={transferUsdc}>Transfer</Button>
-     </Paper>
-    </div>
+        )}
 
-   
-    </>
+        <Button variant="contained" onClick={transferUsdc}>
+          Transfer
+        </Button>
+      </BackGround>
+ 
+    </ThemeProvider>
   );
 }
 
