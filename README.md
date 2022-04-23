@@ -1,3 +1,6 @@
+Crypto Wallet frontend with React and ethers.js. Connect your metamask and send and receive Ethereum on the Ropsten testnet.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
