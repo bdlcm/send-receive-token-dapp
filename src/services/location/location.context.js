@@ -29,6 +29,8 @@ export const LocationContextProvider = ({ children }) => {
           // convert a currency unit from wei to ether
           const balanceInEth = ethers.utils.formatEther(balance);
           setWallet(balanceInEth);
+          console.log("history", process.env.REACT_APP_NOT_SECRET_CODE);
+          // viewTransactions();
         });
       } else {
         console.log("error");
@@ -39,9 +41,17 @@ export const LocationContextProvider = ({ children }) => {
     }
   }
 
+  async function viewTransactions() {
+
+    let provider = new ethers.providers.EtherscanProvider();
+    let history = await provider.getHistory("0xb5d85cbf7cb3ee0d56b3bb207d5fc4b82f43f511");
+
+    console.log("history", history);
+  }
+
   useEffect(() => {
     getAddress();
-  }, [wallet]);
+  }, [address]);
 
   return (
     <LocationContext.Provider

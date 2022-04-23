@@ -1,4 +1,4 @@
-import React, { useState, useContext, createContext, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import { ethers } from "ethers";
 
 export const MintingContext = createContext();
