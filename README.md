@@ -1,6 +1,7 @@
  
 
-# Simple crypto wallet frontend with React and ethers.js. Connect your metamask and send and receive Ethereum on the Ropsten testnet.
+# Simple crypto wallet frontend with React and ethers.js. 
+##Connect your metamask and send and receive Ethereum on the Ropsten testnet.
 
  
 In the project directory,  run:
